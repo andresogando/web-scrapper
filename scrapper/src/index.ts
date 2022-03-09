@@ -10,8 +10,6 @@ import {
   JOB_LISTDATE_SELECTOR,
   JOB_LOCATION_SELECTOR,
   JOB_SEARCH_URL,
-  JOB_SEARCH_URL2,
-  JOB_SEARCH_URL3,
   JOB_TITLE_SELECTOR,
 } from "./common";
 import { ScrapeJobs } from "./common";
@@ -29,14 +27,14 @@ const scrapeJobs = async (): ScrapeJobs => {
     await page.setUserAgent(JOB_BROWSER_USER_AGENT);
     await page.setViewport({ width: 1496, height: 810 });
 
-    await page.goto(JOB_SEARCH_URL2, { waitUntil: "networkidle2" });
+    await page.goto(JOB_SEARCH_URL, { waitUntil: "networkidle2" });
 
     for (let i = 1; i < counter; i++) {
       await Promise.all([
         page.waitForNavigation(),
         page.click(JOB_CARD_SELECTOR(i)),
       ]).catch((e) => {
-        console.error(e);
+        /** LinkedIn wait-block error handler, so we don't stop scrapping data. */
         counter++;
         job = null;
         isReady = false;
@@ -65,7 +63,7 @@ const scrapeJobs = async (): ScrapeJobs => {
           Experience,
         });
 
-        console.log(job);
+        console.log("Job Added! . . . . Searching for More Jobs . . . .");
         await createJob(job);
 
         // wait 5s to continue. helps with linkedin rate limiting.

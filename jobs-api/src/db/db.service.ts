@@ -1,13 +1,13 @@
-import { InternalServerErrorException } from '@nestjs/common';
-import * as AWS from 'aws-sdk';
-import { PaginationQueryDto, TechnologyQueryDto } from 'src/common';
-import { LocationQueryDto } from 'src/common/dto/location-query.dto';
-import { sortBy } from 'lodash';
+import { InternalServerErrorException } from "@nestjs/common";
+import * as AWS from "aws-sdk";
+import { PaginationQueryDto, TechnologyQueryDto } from "src/common";
+import { LocationQueryDto } from "src/common/dto/location-query.dto";
+import {  sortBy } from "lodash";
 
 export class DynamoService {
   constructor(private readonly client: AWS.DynamoDB, private key) {
-    AWS.config.loadFromPath(__dirname + '/../../awsconfig.json');
-    console.log('Connected!');
+    AWS.config.loadFromPath(__dirname + "/../../awsconfig.json");
+    console.log("Connected!");
   }
 
   async findAll(params: PaginationQueryDto) {
@@ -21,7 +21,7 @@ export class DynamoService {
     try {
       const result = await new AWS.DynamoDB.DocumentClient()
         .scan({
-          TableName: 'Job',
+          TableName: "Job",
           Limit: limit,
         })
         .promise();
@@ -42,9 +42,9 @@ export class DynamoService {
     if (this.key) {
       const params = {
         Limit: limit,
-        FilterExpression: 'contains(address, :cc)',
+        FilterExpression: "contains(address, :cc)",
         ExpressionAttributeValues: {
-          ':cc': location,
+          ":cc": location,
         },
       };
       return this.paginatedScan(this.key, params);
@@ -53,10 +53,10 @@ export class DynamoService {
     try {
       const result = await new AWS.DynamoDB.DocumentClient()
         .scan({
-          TableName: 'Job',
-          FilterExpression: 'contains(address, :cc)',
+          TableName: "Job",
+          FilterExpression: "contains(address, :cc)",
           ExpressionAttributeValues: {
-            ':cc': location,
+            ":cc": location,
           },
           Limit: limit,
         })
@@ -82,9 +82,9 @@ export class DynamoService {
     if (this.key) {
       const params = {
         Limit: limit,
-        FilterExpression: 'contains(description, :cc)',
+        FilterExpression: "contains(description, :cc)",
         ExpressionAttributeValues: {
-          ':cc': technology,
+          ":cc": technology,
         },
       };
       return this.paginatedScan(this.key, params);
@@ -93,10 +93,10 @@ export class DynamoService {
     try {
       const result = await new AWS.DynamoDB.DocumentClient()
         .scan({
-          TableName: 'Job',
-          FilterExpression: 'contains(description, :cc)',
+          TableName: "Job",
+          FilterExpression: "contains(description, :cc)",
           ExpressionAttributeValues: {
-            ':cc': technology,
+            ":cc": technology,
           },
           Limit: limit,
         })
@@ -104,10 +104,11 @@ export class DynamoService {
 
       job = result.Items;
       this.key = result.LastEvaluatedKey;
+
       if (sort) {
-        job = this.sortData(result.Items, sort);
+        const tech = sort.toLowerCase() === "technology" ? "description" : sort;
+        job = this.sortData(result.Items, tech);
       }
-      console.log(result);
     } catch (err) {
       throw new InternalServerErrorException(err);
     }
@@ -115,12 +116,14 @@ export class DynamoService {
     return { ok: true, data: job };
   }
 
+  
+
   private async paginatedScan(key: any, queryParam?: any) {
     let job;
     try {
       const result = await new AWS.DynamoDB.DocumentClient()
         .scan({
-          TableName: 'Job',
+          TableName: "Job",
           ExclusiveStartKey: key,
           ...queryParam,
         })

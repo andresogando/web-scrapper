@@ -24,4 +24,6 @@ export class JobController {
   findyByTechnology(@Query() technologyQueryDto: TechnologyQueryDto) {
     return this.jobsService.findByTechnology(technologyQueryDto);
   }
+
+  
 }
