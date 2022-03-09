@@ -1,0 +1,17 @@
+## Installation
+
+```bash
+$ yarn build
+```
+
+## Running the app
+
+```bash
+# jobs-api
+$ npm run start:jobsapi
+
+# scrapper mode
+$ npm run start:scrapper
+
+
+```

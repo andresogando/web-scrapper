@@ -6,19 +6,19 @@
   "author": "Andres <andresogando10@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "typescript": "^4.6.2"
+    "typescript": "^4.6.2",
+    "yarn-recursive": "^1.1.0"
   },
   "scripts": {
     "build:jobsapi": "tsc -p jobs-api",
     "build:scrapper": "tsc -p scrapper",
-    "build": "npm-run-all build:*",
+    "build": "yarn-recursive && npm-run-all build:*",
     "start:jobsapi": "npm run start --prefix jobs-api",
     "start:scrapper": "npm run start --prefix scrapper",
-    "start": " npm run prepareServices  && npm-run-all start:*",
+    "start": "npm-run-all start:*",
     "clean:jobsapi": "rimraf jobs-api/dist",
     "clean:scrapper": "rimraf scrapper/dist",
-    "clean": "npm-run-all clean:*",
-    "prepareServices": "concurrently 'npm run clean' 'npm run build' sleep 'npm start'"
+    "clean": "npm-run-all clean:*"
   },
   "devDependencies": {
     "concurrently": "^7.0.0",
