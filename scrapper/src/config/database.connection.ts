@@ -5,7 +5,6 @@ let connection: AWS.DynamoDB;
 export const createDatabaseConnection = async () => {
   try {
     if (connection) {
-      console.log("No connection necessary.");
       return connection;
     }
 
