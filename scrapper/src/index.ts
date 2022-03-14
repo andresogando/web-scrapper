@@ -19,7 +19,7 @@ const scrapeJobs = async (): ScrapeJobs => {
   try {
     let job = {};
     let counter: number = 100;
-    let isReady: boolean = false;
+    let isReady: boolean = true;
 
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
@@ -35,13 +35,13 @@ const scrapeJobs = async (): ScrapeJobs => {
         page.click(JOB_CARD_SELECTOR(i)),
       ]).catch((e) => {
         /** LinkedIn wait-block error handler, so we don't stop scrapping data. */
-        counter++;
         job = null;
         isReady = false;
         return isReady;
       });
 
-      page.mouse.wheel({ deltaY: 1200 }), (isReady = true);
+      page.mouse.wheel({ deltaY: 1200 })
+
 
       if (isReady) {
         const Title = await assignProperty(JOB_TITLE_SELECTOR, page);
