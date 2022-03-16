@@ -7,7 +7,6 @@ import { sortBy } from "lodash";
 export class DynamoService {
   constructor(private readonly client: AWS.DynamoDB, private key) {
     AWS.config.loadFromPath(__dirname + "/../../awsconfig.json");
-    console.log("Connected!");
   }
 
   async findAll(params: PaginationQueryDto) {
